@@ -2,7 +2,7 @@ const canvas = document.getElementById("mycanvas");
 const pizarra = canvas.getContext("2d");
 const width = canvas.width;
 const height = canvas.height;
-const size = 10;
+const size = 8;
 
 
 
@@ -10,7 +10,7 @@ const size = 10;
 function grid(m, n) {
     let mapa = [];
     for (let i = 0; i < n; i++) { 
-        let fila = Array(m).fill({color: null, vel: 0});
+        let fila = Array(m).fill(0);
         mapa.push(fila);
     }
     return mapa;
@@ -44,12 +44,11 @@ function actualizar(mapa) {
         for (let columna = 0; columna < mapa[0].length; columna++) {
             let celda = mapa[fila][columna]
             if (celda !== 0) {
-                if (fila + 1 < mapa.length && mapa[fila + 1][columna].vel === 0) { // si esta dentro del limite y abajo hay un 0, el pixel cae
+                if (fila + 1 < mapa.length && mapa[fila + 1][columna] === 0) { // si esta dentro del limite y abajo hay un 0, el pixel cae
                     nuevoMapa[fila + 1][columna] = celda; 
-
-                } else if (fila + 1 < mapa.length && mapa[fila + 1][columna + 1].vel === 0){ //fisicas de la arena izquierda y derecha
+                } else if (fila + 1 < mapa.length && mapa[fila + 1][columna + 1] === 0){ //fisicas de la arena izquierda y derecha
                     nuevoMapa[fila+1][columna+1] = celda;
-                } else if (fila + 1 < mapa.length && mapa[fila + 1][columna - 1].vel === 0){
+                } else if (fila + 1 < mapa.length && mapa[fila + 1][columna - 1] === 0){
                     nuevoMapa[fila-1][columna-1] = celda;
                 } else {
                     nuevoMapa[fila][columna] = celda;                   // si no se queda ahi mismo
