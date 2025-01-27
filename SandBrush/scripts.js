@@ -2,7 +2,7 @@ const canvas = document.getElementById("mycanvas");
 const pizarra = canvas.getContext("2d");
 const width = canvas.width;
 const height = canvas.height;
-const size = 8;
+const size = 10;
 
 
 
@@ -29,7 +29,7 @@ function mostrar_mapa(mapa) {
             let x = columna * size;
             let y = fila * size;
             let celda = mapa[fila][columna]
-            if (celda.vel === 1) {
+            if (celda.vel >= 1) {
                 pizarra.fillStyle = celda.color; 
                 pizarra.fillRect(x, y, size, size);
             }
@@ -44,14 +44,24 @@ function actualizar(mapa) {
         for (let columna = 0; columna < mapa[0].length; columna++) {
             let celda = mapa[fila][columna]
             if (celda !== 0) {
-                if (fila + 1 < mapa.length && mapa[fila + 1][columna] === 0) { // si esta dentro del limite y abajo hay un 0, el pixel cae
-                    nuevoMapa[fila + 1][columna] = celda; 
-                } else if (fila + 1 < mapa.length && mapa[fila + 1][columna + 1] === 0){ //fisicas de la arena izquierda y derecha
+                if (fila + celda.vel < mapa.length && mapa[fila + celda.vel][columna] === 0) {  // si esta dentro del limite y abajo hay un 0, el pixel cae
+                    nuevoMapa[fila + celda.vel][columna] = celda; 
+                    nuevoMapa[fila + celda.vel][columna].vel++
+
+
+// de aqui para abajo no tocar :p
+            
+                } else if (fila + celda.vel < mapa.length && mapa[fila + 1][columna + 1] === 0){ //fisicas de la arena izquierda y derecha
                     nuevoMapa[fila+1][columna+1] = celda;
-                } else if (fila + 1 < mapa.length && mapa[fila + 1][columna - 1] === 0){
+                    nuevoMapa[fila+1][columna+1].vel = 1   
+                    
+                } else if (fila + celda.vel < mapa.length && mapa[fila + 1][columna - 1] === 0){
                     nuevoMapa[fila-1][columna-1] = celda;
+                    nuevoMapa[fila-1][columna-1].vel = 1   
+
                 } else {
-                    nuevoMapa[fila][columna] = celda;                   // si no se queda ahi mismo
+                    nuevoMapa[fila][columna] = celda;
+                    nuevoMapa[fila][columna].vel = 1                   // si no se queda ahi mismo
                 }
 
             }
@@ -75,12 +85,12 @@ function colores(iteracion) {
       let columna = Math.floor(event.offsetX / size);
       let fila = Math.floor(event.offsetY / size);
       if (event.buttons === 1){ // si el boton esta apretado dibuja, si no, no.
-        if (fila >= 0 && fila < mapa.length && columna >= 0 && columna < mapa[0].length) {
-            mapa[fila][columna] =   {color: colores(iteracion), vel : 1};
-            mapa[fila][columna+1] = {color: colores(iteracion), vel : 1};
-            mapa[fila][columna-1] = {color: colores(iteracion), vel : 1}; //pincel mas grande
-            mapa[fila-1][columna] = {color: colores(iteracion), vel : 1};
-            mapa[fila+1][columna] = {color: colores(iteracion), vel : 1};
+        if (fila >= 2 && fila < mapa.length && columna >= 1 && columna < mapa[0].length - 1) {
+            mapa[fila][columna] =   {color: colores(iteracion), vel:1};
+            mapa[fila][columna+1] = {color: colores(iteracion), vel:1};
+            mapa[fila][columna-1] = {color: colores(iteracion), vel:1}; //pincel mas grande
+            mapa[fila-1][columna] = {color: colores(iteracion), vel:1};
+            mapa[fila+1][columna] = {color: colores(iteracion), vel:1}; 
         }
     }
 }
